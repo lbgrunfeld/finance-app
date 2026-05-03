@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Settings {
+  id              Int      @id @default(1)
+  startingBalance Float    @default(0)
+  currency        String   @default("USD")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Transaction {
+  id              String         @id @default(cuid())
+  date            DateTime
+  amount          Float
+  type            String
+  category        String
+  subcategory     String?
+  payee           String?
+  note            String?
+  isSubscription  Boolean        @default(false)
+  isRecurring     Boolean        @default(false)
+  status          String         @default("POSTED")
+  recurringRuleId String?
+  recurringRule   RecurringRule? @relation(fields: [recurringRuleId], references: [id])
+  subscription    Subscription?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model RecurringRule {
+  id           String        @id @default(cuid())
+  frequency    String
+  startDate    DateTime
+  endDate      DateTime?
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+}
+
+model Subscription {
+  id            String      @id @default(cuid())
+  transactionId String      @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  billingCycle  String
+  nextRenewal   DateTime
+  annualCost    Float
+  status        String      @default("ACTIVE")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Budget {
+  id           String   @id @default(cuid())
+  category     String   @unique
+  monthlyLimit Float
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Position {
+  id                String    @id @default(cuid())
+  ticker            String
+  shares            Float
+  costBasisPerShare Float?
+  purchaseDate      DateTime?
+  lotLabel          String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model PriceCache {
+  ticker     String   @id
+  closePrice Float
+  priceDate  String
+  fetchedAt  DateTime
+}
+
+model PortfolioSnapshot {
+  id         String   @id @default(cuid())
+  date       DateTime @unique
+  totalValue Float
+  createdAt  DateTime @default(now())
+}
+
+model Goal {
+  id           String    @id @default(cuid())
+  name         String
+  targetAmount Float
+  targetDate   DateTime?
+  balance      Float     @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
