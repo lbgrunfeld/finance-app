@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react'
 import { updateCurrency } from '@/actions/settings'
-import { CURRENCIES } from '@/lib/currency'
+import { CURRENCIES } from '@/lib/currencies'
 import { Label } from '@/components/ui/label'
 import {
   Select,

@@ -14,5 +14,3 @@ export async function getCurrentCurrency(): Promise<string> {
 export function invalidateCurrencyCache() {
   cached = null
 }
-
-export const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY', 'CHF'] as const

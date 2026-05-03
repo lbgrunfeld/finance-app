@@ -1,5 +1,7 @@
-import yahooFinance from 'yahoo-finance2'
+import YahooFinance from 'yahoo-finance2'
 import { prisma } from '@/lib/prisma'
+
+const yahooFinance = new YahooFinance()
 
 type CachedPrice = {
   price: number
@@ -55,7 +57,9 @@ export async function getQuote(ticker: string): Promise<StockQuote> {
     }).catch(() => {})
 
     return { ticker, ...result, stale: false }
-  } catch {
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error(`[stock] getQuote(${ticker}) failed:`, msg)
     if (cached) {
       return { ticker, ...cached, stale: true }
     }
@@ -82,7 +86,7 @@ export async function getQuote(ticker: string): Promise<StockQuote> {
       change: 0,
       changePct: 0,
       stale: true,
-      error: 'Price unavailable',
+      error: msg.slice(0, 100),
     }
   }
 }
