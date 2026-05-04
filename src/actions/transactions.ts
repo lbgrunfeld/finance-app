@@ -52,9 +52,9 @@ export async function createTransaction(data: {
           amount: data.amount,
           type: data.type,
           category: data.category,
-          subcategory: data.subcategory,
-          payee: data.payee,
-          note: data.note,
+          subcategory: data.subcategory?.trim() || null,
+          payee: data.payee?.trim() || null,
+          note: data.note?.trim() || null,
           isSubscription: data.isSubscription ?? false,
           isRecurring: !!recurringRuleId || (data.isRecurring ?? false),
           recurringRuleId,
@@ -101,13 +101,40 @@ export async function updateTransaction(
   }>
 ): Promise<TransactionResult> {
   try {
-    await prisma.transaction.update({
-      where: { id },
-      data: {
-        ...data,
-        ...(data.date ? { date: new Date(data.date) } : {}),
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.transaction.update({
+        where: { id },
+        data: {
+          ...(data.date ? { date: new Date(data.date) } : {}),
+          ...(data.amount !== undefined ? { amount: data.amount } : {}),
+          ...(data.category !== undefined ? { category: data.category } : {}),
+          ...(data.subcategory !== undefined
+            ? { subcategory: data.subcategory.trim() || null }
+            : {}),
+          ...(data.payee !== undefined
+            ? { payee: data.payee.trim() || null }
+            : {}),
+          ...(data.note !== undefined
+            ? { note: data.note.trim() || null }
+            : {}),
+        },
+      })
+
+      if (data.amount !== undefined) {
+        const sub = await tx.subscription.findUnique({
+          where: { transactionId: id },
+        })
+        if (sub) {
+          const annualCost =
+            sub.billingCycle === 'MONTHLY' ? data.amount * 12 : data.amount
+          await tx.subscription.update({
+            where: { id: sub.id },
+            data: { annualCost },
+          })
+        }
+      }
     })
+
     revalidatePath('/')
     revalidatePath('/transactions')
     return { success: true }
