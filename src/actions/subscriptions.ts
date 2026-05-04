@@ -36,7 +36,7 @@ export async function getActiveSubscriptions() {
   })
 }
 
-export async function getUpcomingRenewals(days = 30) {
+export async function getUpcomingRenewals(days = 400) {
   const cutoff = addDays(new Date(), days)
   return prisma.subscription.findMany({
     where: { status: 'ACTIVE', nextRenewal: { lte: cutoff } },

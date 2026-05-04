@@ -5,13 +5,13 @@ import { CancelSubscriptionButton } from '@/components/cancel-subscription-butto
 
 export async function UpcomingRenewals() {
   const [renewals, currency] = await Promise.all([
-    getUpcomingRenewals(30),
+    getUpcomingRenewals(),
     getCurrentCurrency(),
   ])
 
   if (renewals.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">No renewals in the next 30 days.</p>
+      <p className="text-sm text-muted-foreground">No active subscriptions.</p>
     )
   }
 
