@@ -5,13 +5,9 @@ import { PositionForm } from '@/components/position-form'
 import { PortfolioChart } from '@/components/portfolio-chart'
 import { SnapshotButton } from '@/components/snapshot-button'
 import { getPortfolioHistory } from '@/actions/snapshots'
-import { getCurrentCurrency } from '@/lib/currency'
 
 export default async function PortfolioPage() {
-  const [history, currency] = await Promise.all([
-    getPortfolioHistory(90),
-    getCurrentCurrency(),
-  ])
+  const history = await getPortfolioHistory(90)
 
   const chartData = history.map((s) => ({
     date: s.date.toISOString().slice(0, 10),
@@ -28,7 +24,7 @@ export default async function PortfolioPage() {
       <div className="space-y-2">
         <h2 className="text-lg font-medium">90-day history</h2>
         <div className="rounded-md border p-6">
-          <PortfolioChart data={chartData} currency={currency} />
+          <PortfolioChart data={chartData} />
         </div>
       </div>
 

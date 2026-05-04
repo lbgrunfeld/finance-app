@@ -1,13 +1,9 @@
 import { getUpcomingRenewals } from '@/actions/subscriptions'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { getCurrentCurrency } from '@/lib/currency'
 import { CancelSubscriptionButton } from '@/components/cancel-subscription-button'
 
 export async function UpcomingRenewals() {
-  const [renewals, currency] = await Promise.all([
-    getUpcomingRenewals(),
-    getCurrentCurrency(),
-  ])
+  const renewals = await getUpcomingRenewals()
 
   if (renewals.length === 0) {
     return (
@@ -26,7 +22,7 @@ export async function UpcomingRenewals() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-medium">{formatCurrency(r.transaction.amount, currency)}</span>
+            <span className="font-medium">{formatCurrency(r.transaction.amount)}</span>
             <CancelSubscriptionButton id={r.id} />
           </div>
         </li>

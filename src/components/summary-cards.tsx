@@ -1,19 +1,17 @@
 import { getMonthlySummary } from '@/actions/transactions'
 import { getPortfolio } from '@/actions/positions'
 import { formatCurrency } from '@/lib/utils'
-import { getCurrentCurrency } from '@/lib/currency'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export async function SummaryCards() {
   const now = new Date()
-  const [summary, portfolio, currency] = await Promise.all([
+  const [summary, portfolio] = await Promise.all([
     getMonthlySummary(now.getFullYear(), now.getMonth() + 1),
     getPortfolio(),
-    getCurrentCurrency(),
   ])
 
   const netWorth = summary.cashBalance + portfolio.totalValue
-  const fmt = (n: number) => formatCurrency(n, currency)
+  const fmt = (n: number) => formatCurrency(n)
 
   const cards = [
     { title: 'Monthly Income', value: fmt(summary.totalIncome), sub: 'This month' },

@@ -15,10 +15,8 @@ const config = {
 
 export function PortfolioChart({
   data,
-  currency,
 }: {
   data: { date: string; totalValue: number }[]
-  currency: string
 }) {
   if (data.length === 0) {
     return (
@@ -37,13 +35,13 @@ export function PortfolioChart({
           tickLine={false}
           axisLine={false}
           fontSize={12}
-          tickFormatter={(v) => formatCurrency(v, currency)}
+          tickFormatter={(v) => formatCurrency(v)}
         />
         <ChartTooltip
           content={
             <ChartTooltipContent
               formatter={(value) =>
-                typeof value === 'number' ? formatCurrency(value, currency) : value
+                typeof value === 'number' ? formatCurrency(value) : value
               }
             />
           }

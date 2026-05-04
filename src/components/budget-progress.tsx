@@ -1,15 +1,11 @@
 import { getBudgetStatus } from '@/actions/transactions'
 import { formatCurrency } from '@/lib/utils'
-import { getCurrentCurrency } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 
 export async function BudgetProgress() {
   const now = new Date()
-  const [statuses, currency] = await Promise.all([
-    getBudgetStatus(now.getFullYear(), now.getMonth() + 1),
-    getCurrentCurrency(),
-  ])
-  const fmt = (n: number) => formatCurrency(n, currency)
+  const statuses = await getBudgetStatus(now.getFullYear(), now.getMonth() + 1)
+  const fmt = (n: number) => formatCurrency(n)
 
   if (statuses.length === 0) {
     return (

@@ -1,6 +1,5 @@
 import { getPortfolio } from '@/actions/positions'
 import { formatCurrency } from '@/lib/utils'
-import { getCurrentCurrency } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 import {
   Table,
@@ -14,11 +13,8 @@ import { DeletePositionButton } from '@/components/delete-position-button'
 import { EditPositionDialog } from '@/components/edit-position-dialog'
 
 export async function PositionList() {
-  const [{ positions, totalValue, totalGainLoss }, currency] = await Promise.all([
-    getPortfolio(),
-    getCurrentCurrency(),
-  ])
-  const fmt = (n: number) => formatCurrency(n, currency)
+  const { positions, totalValue, totalGainLoss } = await getPortfolio()
+  const fmt = (n: number) => formatCurrency(n)
 
   if (positions.length === 0) {
     return (

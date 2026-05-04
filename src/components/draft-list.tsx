@@ -1,13 +1,9 @@
 import { getTransactions } from '@/actions/transactions'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { getCurrentCurrency } from '@/lib/currency'
 import { DraftActions } from '@/components/draft-actions'
 
 export async function DraftList() {
-  const [drafts, currency] = await Promise.all([
-    getTransactions({ status: 'DRAFT' }),
-    getCurrentCurrency(),
-  ])
+  const drafts = await getTransactions({ status: 'DRAFT' })
   if (drafts.length === 0) return null
 
   return (
@@ -31,7 +27,7 @@ export async function DraftList() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="font-medium">{formatCurrency(d.amount, currency)}</span>
+              <span className="font-medium">{formatCurrency(d.amount)}</span>
               <DraftActions id={d.id} />
             </div>
           </li>

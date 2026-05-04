@@ -26,10 +26,8 @@ const COLORS = [
 
 export function ExpenseChart({
   data,
-  currency,
 }: {
   data: { category: string; total: number }[]
-  currency: string
 }) {
   if (data.length === 0) {
     return (
@@ -51,7 +49,7 @@ export function ExpenseChart({
           content={
             <ChartTooltipContent
               formatter={(value) =>
-                typeof value === 'number' ? formatCurrency(value, currency) : value
+                typeof value === 'number' ? formatCurrency(value) : value
               }
             />
           }

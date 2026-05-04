@@ -1,6 +1,5 @@
 import { getTransactions } from '@/actions/transactions'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { getCurrentCurrency } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 import {
   Table,
@@ -18,10 +17,7 @@ export async function TransactionList({
 }: {
   filters?: Parameters<typeof getTransactions>[0]
 }) {
-  const [transactions, currency] = await Promise.all([
-    getTransactions(filters),
-    getCurrentCurrency(),
-  ])
+  const transactions = await getTransactions(filters)
 
   if (transactions.length === 0) {
     return (
@@ -70,7 +66,7 @@ export async function TransactionList({
               }`}
             >
               {t.type === 'EXPENSE' ? '–' : '+'}
-              {formatCurrency(t.amount, currency)}
+              {formatCurrency(t.amount)}
             </TableCell>
             <TableCell className="text-right">
               <div className="flex justify-end gap-1">

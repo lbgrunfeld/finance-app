@@ -1,15 +1,13 @@
 import { getGoals } from '@/actions/goals'
 import { getMonthlySummary } from '@/actions/transactions'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { getCurrentCurrency } from '@/lib/currency'
 import { GoalActions } from '@/components/goal-actions'
 
 export async function GoalList() {
   const now = new Date()
-  const [goals, summary, currency] = await Promise.all([
+  const [goals, summary] = await Promise.all([
     getGoals(),
     getMonthlySummary(now.getFullYear(), now.getMonth() + 1),
-    getCurrentCurrency(),
   ])
 
   if (goals.length === 0) {
@@ -21,7 +19,7 @@ export async function GoalList() {
   }
 
   const monthlyNet = summary.netCashflow
-  const fmt = (n: number) => formatCurrency(n, currency)
+  const fmt = (n: number) => formatCurrency(n)
 
   return (
     <ul className="space-y-4">

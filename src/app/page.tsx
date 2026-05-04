@@ -6,7 +6,6 @@ import { BudgetProgress } from '@/components/budget-progress'
 import { BudgetForm } from '@/components/budget-form'
 import { ExportButtons } from '@/components/export-buttons'
 import { StartingBalanceForm } from '@/components/starting-balance-form'
-import { CurrencySelect } from '@/components/currency-select'
 import { ExpenseChart } from '@/components/expense-chart'
 import { getCategoryBreakdown, getDraftCount } from '@/actions/transactions'
 import { getSettings } from '@/actions/settings'
@@ -24,7 +23,6 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
         <div className="flex items-center gap-4 flex-wrap">
-          <CurrencySelect current={settings.currency} />
           <StartingBalanceForm current={settings.startingBalance} />
           <ExportButtons />
         </div>
@@ -56,7 +54,7 @@ export default async function DashboardPage() {
       <div>
         <h2 className="text-lg font-medium mb-4">Expense breakdown</h2>
         <div className="rounded-md border p-6">
-          <ExpenseChart data={breakdown} currency={settings.currency} />
+          <ExpenseChart data={breakdown} />
         </div>
       </div>
     </main>
